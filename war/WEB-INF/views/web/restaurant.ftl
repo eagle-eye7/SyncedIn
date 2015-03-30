@@ -12,8 +12,8 @@
   <body>
     <article>
       <section>
-        <h2 class="yellow">Your Lunch</h2>
-        <p>${ food }</p>
+        <h2 class="yellow">${ name }</h2>
+        <strong>${ address }</strong>
       </section>
     </article>
   </body>

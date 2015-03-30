@@ -24,6 +24,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/google-api-java-client/libs/jetty-util-6.1.26.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/google-api-java-client/libs/protobuf-java-2.4.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/google-api-java-client/libs/xpp3-1.1.4c.jar"/>
-	<classpathentry kind="con" path="com.google.gdt.eclipse.managedapis.MANAGED_API_CONTAINER/oauth2-v2r88lv1.18.0-rc"/>
+	<classpathentry kind="con" path="com.google.gdt.eclipse.managedapis.MANAGED_API_CONTAINER/oauth2-v2r89lv1.18.0-rc"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

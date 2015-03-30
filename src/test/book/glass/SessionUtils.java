@@ -10,7 +10,7 @@ public final class SessionUtils {
 	}
 
 	public static void setUserId(HttpServletRequest request, String userId) {
-		request.setAttribute("userId", userId);
+		request.getSession().setAttribute("userId", userId);
 	}
 
 	public static void removeUserId(HttpServletRequest request)
