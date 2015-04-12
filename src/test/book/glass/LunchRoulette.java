@@ -40,7 +40,7 @@ public final class LunchRoulette {
 		Timeline timeline = mirror.timeline();
 
 		// Generate a unique Lunch Roulette bundle id
-		String bundleId = "lunchRoulette" + UUID.randomUUID();
+		String bundleId = "SyncedIn" + UUID.randomUUID();
 
 		// First Cuisine Option
 		TimelineItem timelineItem1 = new TimelineItem()
@@ -61,7 +61,7 @@ public final class LunchRoulette {
 
 		// get a cuisine, populate an object, and render the template
 		String cuisine = getRandomCuisine();
-		Map<String, String> data = Collections.singletonMap("food", cuisine);
+		Map<String, String> data = Collections.singletonMap("Name", cuisine);
 		String html = render(ctx, "glass/cuisine.ftl", data);
 
 		TimelineItem timelineItem = new TimelineItem()
@@ -76,7 +76,7 @@ public final class LunchRoulette {
 	public static String renderRandomCuisine(ServletContext ctx)
 			throws IOException, ServletException {
 		String cuisine = getRandomCuisine();
-		Map<String, String> data = Collections.singletonMap("food", cuisine);
+		Map<String, String> data = Collections.singletonMap("Name", cuisine);
 		return render(ctx, "glass/cuisine.ftl", data);
 	}
 
@@ -121,11 +121,10 @@ public final class LunchRoulette {
 		if (id != null) {
 			timelineItem = timeline.get(id).execute();
 		}
-
 		return timelineItem;
 	}
 
-	// This code is different from the book. It adds the toggle pinned menu item
+	// This code is different. It adds the toggle pinned menu item
 	public static void setSimpleMenuItems(TimelineItem ti) {
 		// Create a blank menu list
 		ti.setMenuItems(new LinkedList<MenuItem>());
@@ -188,8 +187,8 @@ public final class LunchRoulette {
 	 * @return one of many lunch choices.
 	 */
 	public static String getRandomCuisine() {
-		String[] lunchOptions = { "American", "Chinese", "French", "Italian",
-				"Japenese", "Thai" };
+		String[] lunchOptions = { "Farhan", "Rehan", "Mommy", "Mukul",
+				"Shanky", "Abhi" };
 		int choice = new Random().nextInt(lunchOptions.length);
 		return lunchOptions[choice];
 	}

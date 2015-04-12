@@ -26,12 +26,6 @@ public class OAuth2Servlet extends HttpServlet {
 		if (!hasError(req, res)) {
 			res.sendRedirect(doAuth(req));
 		}
-		/*
-		 * RequestDispatcher rd =
-		 * req.getRequestDispatcher("LunchRouletteServlet"); try {
-		 * rd.forward(req, res); } catch (ServletException e) {
-		 * e.printStackTrace(); }
-		 */
 	}
 
 	private boolean hasError(HttpServletRequest req, HttpServletResponse res)

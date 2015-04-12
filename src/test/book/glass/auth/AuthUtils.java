@@ -17,8 +17,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.DataStore;
 
 public final class AuthUtils {
-	public static final List<String> SCOPES = Arrays.asList(
-			"https://www.googleapis.com/auth/userinfo.profile",
+	public static final List<String> SCOPES = Arrays.asList("profile",
 			"https://www.googleapis.com/auth/glass.timeline");
 	public static final String WEB_CLIENT_ID = "797992421060-m4v7ps7vdksk6ohk1b9vqa3crrlajs1u.apps.googleusercontent.com";
 	public static final String WEB_CLIENT_SECRET = "Ym6AFhBelW90xA0L1QZinBod";
