@@ -18,10 +18,12 @@ import com.google.api.client.util.store.DataStore;
 
 public final class AuthUtils {
 	public static final List<String> SCOPES = Arrays.asList("profile",
-			"https://www.googleapis.com/auth/glass.timeline");
-	public static final String WEB_CLIENT_ID = "797992421060-m4v7ps7vdksk6ohk1b9vqa3crrlajs1u.apps.googleusercontent.com";
-	public static final String WEB_CLIENT_SECRET = "Ym6AFhBelW90xA0L1QZinBod";
+			"https://www.googleapis.com/auth/glass.timeline",
+			"https://www.googleapis.com/auth/glass.location");
+	public static final String WEB_CLIENT_ID = "797992421060-o3rmll6lsln1mo77crucvri0f8dubk6f.apps.googleusercontent.com";
+	public static final String WEB_CLIENT_SECRET = "xZknkxSsCKyG5JNrGw2v7H3r";
 	public static final String OAUTH2_PATH = "/oauth2callback";
+	public static final String API_KEY = "AIzaSyBWWJzC3vuHApncp9zSB8axO8454E6J7Wc";
 
 	public static Credential getCredential(String userId) throws IOException {
 		return userId == null ? null : buildCodeFlow().loadCredential(userId);
@@ -58,7 +60,6 @@ public final class AuthUtils {
 				new JacksonFactory(), WEB_CLIENT_ID, WEB_CLIENT_SECRET, SCOPES)
 				.setApprovalPrompt("force").setAccessType("offline")
 				.setCredentialDataStore(getDataStore()).build();
-
 	}
 
 	public static String fullUrl(HttpServletRequest req, String rawPath) {

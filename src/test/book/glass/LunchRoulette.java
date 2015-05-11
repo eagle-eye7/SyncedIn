@@ -2,23 +2,28 @@ package test.book.glass;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import test.book.glass.auth.AuthUtils;
+import test.book.glass.places.Place;
+import test.book.glass.places.PlaceUtils;
 
 import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.util.Base64;
 import com.google.api.services.mirror.Mirror;
 import com.google.api.services.mirror.Mirror.Timeline;
+import com.google.api.services.mirror.model.Location;
 import com.google.api.services.mirror.model.MenuItem;
 import com.google.api.services.mirror.model.MenuValue;
 import com.google.api.services.mirror.model.TimelineItem;
@@ -34,24 +39,31 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 public final class LunchRoulette {
-	public static void insertMultiHtmlTimelineItem(ServletContext ctx,
-			HttpServletRequest req) throws IOException, ServletException {
-		Mirror mirror = MirrorUtils.getMirror(req);
-		Timeline timeline = mirror.timeline();
+	public static void insertRandomRestaurantTimelineItem(ServletContext ctx,
+			String userId) throws IOException, ServletException {
+		Mirror mirror = MirrorUtils.getMirror(userId);
+		try {
+			Location location = mirror.locations().get("latest").execute();
 
-		// Generate a unique Lunch Roulette bundle id
-		String bundleId = "SyncedIn" + UUID.randomUUID();
-
-		// First Cuisine Option
-		TimelineItem timelineItem1 = new TimelineItem()
-				.setHtml(renderRandomCuisine(ctx)).setBundleId(bundleId)
-				.setIsBundleCover(true);
-		timeline.insert(timelineItem1).execute();
-
-		// Alternate Cuisine Option
-		TimelineItem timelineItem2 = new TimelineItem().setHtml(
-				renderRandomCuisine(ctx)).setBundleId(bundleId);
-		timeline.insert(timelineItem2).execute();
+			double latitude = location.getLatitude();// 28.5442190;//
+			double longitude = location.getLongitude();// 77.3339640;//
+			Place restaurant = getRandomRestaurant(latitude, longitude);
+			/*
+			 * restaurant.setLatitude(latitude);
+			 * restaurant.setLongitude(longitude); restaurant.setKind("Indian");
+			 * restaurant.setName("Dosa Plaza"); restaurant .setReference(
+			 * "CmRdAAAAHu_Xh4VXBHXB-JdCluK2AKeFhhvLfxJPHplL84cqfKXK8kYL4RF_sAW9K4Mk7nsMDKzAvZ53Bgeg5jMxco1CUlwJiivv3tCE_GpuaBHQyFP1cjtJVateNlQuBytQAduZEhClCFkxZXYBnsRToc8NYEL3GhREXKKeK6C6DPOa6YfXWZF1rcB_iw"
+			 * ); restaurant.setAddress("Sector 125, Noida");
+			 */
+			// create a timeline item with restaurant information
+			String html = render(ctx, "glass/restaurant.ftl", restaurant);
+			TimelineItem timelineItem = new TimelineItem()
+					.setTitle("Synced In").setHtml(html);
+			mirror.timeline().insert(timelineItem).execute();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// get a nearby restaurant from Google Places
 	}
 
 	public static void insertAndSaveSimpleHtmlTimelineItem(ServletContext ctx,
@@ -61,7 +73,7 @@ public final class LunchRoulette {
 
 		// get a cuisine, populate an object, and render the template
 		String cuisine = getRandomCuisine();
-		Map<String, String> data = Collections.singletonMap("Name", cuisine);
+		Map<String, String> data = Collections.singletonMap("food", cuisine);
 		String html = render(ctx, "glass/cuisine.ftl", data);
 
 		TimelineItem timelineItem = new TimelineItem()
@@ -73,10 +85,15 @@ public final class LunchRoulette {
 		setLunchRouletteId(userId, tiResp.getId());
 	}
 
+	public static String renderRestaurant(ServletContext ctx, Place restaurant)
+			throws IOException, ServletException {
+		return render(ctx, "glass/restaurant.ftl", restaurant);
+	}
+
 	public static String renderRandomCuisine(ServletContext ctx)
 			throws IOException, ServletException {
 		String cuisine = getRandomCuisine();
-		Map<String, String> data = Collections.singletonMap("Name", cuisine);
+		Map<String, String> data = Collections.singletonMap("food", cuisine);
 		return render(ctx, "glass/cuisine.ftl", data);
 	}
 
@@ -102,8 +119,6 @@ public final class LunchRoulette {
 		TimelineItem timelineItem = new TimelineItem().setTitle(
 				"Lunch Roulette").setText(getRandomCuisine());
 
-		setSimpleMenuItems(timelineItem);
-
 		TimelineItem tiResp = timeline.insert(timelineItem).execute();
 
 		setLunchRouletteId(userId, tiResp.getId());
@@ -121,17 +136,15 @@ public final class LunchRoulette {
 		if (id != null) {
 			timelineItem = timeline.get(id).execute();
 		}
+
 		return timelineItem;
 	}
 
-	// This code is different. It adds the toggle pinned menu item
-	public static void setSimpleMenuItems(TimelineItem ti) {
-		// Create a blank menu list
+	public static void setSimpleMenuItems(TimelineItem ti, boolean hasRestaurant) {
+		// Add blank menu list
 		ti.setMenuItems(new LinkedList<MenuItem>());
 
-		// Add menu items
 		ti.getMenuItems().add(new MenuItem().setAction("READ_ALOUD"));
-		ti.getMenuItems().add(new MenuItem().setAction("TOGGLE_PINNED"));
 		ti.getMenuItems().add(new MenuItem().setAction("DELETE"));
 	}
 
@@ -183,12 +196,18 @@ public final class LunchRoulette {
 		ti.getMenuItems().add(new MenuItem().setAction("DELETE"));
 	}
 
+	public static Place getRandomRestaurant(double latitude, double longitude)
+			throws IOException {
+		return PlaceUtils
+				.getRandom("restaurant", "indian", latitude, longitude);
+	}
+
 	/**
 	 * @return one of many lunch choices.
 	 */
 	public static String getRandomCuisine() {
-		String[] lunchOptions = { "Farhan", "Rehan", "Mommy", "Mukul",
-				"Shanky", "Abhi" };
+		String[] lunchOptions = { "American", "Chinese", "French", "Italian",
+				"Japenese", "Thai" };
 		int choice = new Random().nextInt(lunchOptions.length);
 		return lunchOptions[choice];
 	}
@@ -201,9 +220,8 @@ public final class LunchRoulette {
 	 * @throws IOException
 	 * @throws ServletException
 	 */
-	public static String render(ServletContext ctx, String template,
-			Map<String, ? extends Object> data) throws IOException,
-			ServletException {
+	public static String render(ServletContext ctx, String template, Object data)
+			throws IOException, ServletException {
 		Configuration config = new Configuration();
 		config.setServletContextForTemplateLoading(ctx, "WEB-INF/views");
 		config.setDefaultEncoding("UTF-8");
@@ -239,5 +257,15 @@ public final class LunchRoulette {
 		} catch (EntityNotFoundException e) {
 			return null;
 		}
+	}
+
+	public static String toSHA1(byte[] convertme) {
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("SHA-1");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return Base64.encodeBase64String(md.digest(convertme));
 	}
 }

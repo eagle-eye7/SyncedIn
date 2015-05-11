@@ -8,6 +8,7 @@ import test.book.glass.auth.AuthUtils;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.mirror.Mirror;
 
 public final class MirrorUtils {
@@ -24,7 +25,7 @@ public final class MirrorUtils {
 
 	public static Mirror getMirror(Credential credential) throws IOException {
 		return new Mirror.Builder(new UrlFetchTransport(),
-				new com.google.api.client.json.jackson2.JacksonFactory(),
-				credential).setApplicationName("Lunch Roulette").build();
+				new JacksonFactory(), credential).setApplicationName(
+				"Lunch Roulette").build();
 	}
 }

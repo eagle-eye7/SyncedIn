@@ -1,6 +1,6 @@
 <article>
   <section>
-    <h2 class="yellow">Your Name</h2>
-    <strong>${ Name }</strong>
+    <h2 class="yellow">Your Lunch</h2>
+    <strong>${ food }</strong>
   </section>
 </article>

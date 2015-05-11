@@ -1,6 +1,7 @@
 package test.book.glass.auth;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -14,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import test.book.glass.SessionUtils;
 
 public class AuthFilter implements Filter {
+	private Pattern excludesPattern;
+
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain fc)
 			throws IOException, ServletException {
@@ -33,11 +36,16 @@ public class AuthFilter implements Filter {
 	}
 
 	private boolean isRedirectable(HttpServletRequest request) {
-		return !request.getRequestURI().contains(AuthUtils.OAUTH2_PATH);
+		return !excludesPattern.matcher(request.getRequestURI()).matches();
 	}
 
 	@Override
 	public void init(FilterConfig fc) throws ServletException {
+		String excludes = fc.getInitParameter("excludes");
+		if (excludes == null) {
+			excludes = "^$";
+		}
+		this.excludesPattern = Pattern.compile(excludes);
 	}
 
 	@Override

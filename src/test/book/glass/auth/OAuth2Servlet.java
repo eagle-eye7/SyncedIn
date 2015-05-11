@@ -85,6 +85,7 @@ public class OAuth2Servlet extends HttpServlet {
 				.setRedirectUri(callbackUri);
 
 		TokenResponse tokenRes = tokenReq.execute();
+
 		return (GoogleTokenResponse) tokenRes;
 	}
 

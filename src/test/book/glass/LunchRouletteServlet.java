@@ -38,9 +38,10 @@ public class LunchRouletteServlet extends HttpServlet {
 		// Otherwise, create a new one
 		else {
 			LunchRoulette.insertAndSaveSimpleHtmlTimelineItem(ctx, userId);
+			LunchRoulette.insertRandomRestaurantTimelineItem(ctx, userId);
 		}
 
 		resp.setContentType("text/plain");
-		resp.getWriter().append("Inserted Timeline Item");
+		resp.getWriter().append("Inserted Timeline Items");
 	}
 }
