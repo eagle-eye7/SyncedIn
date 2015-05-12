@@ -1,75 +1,67 @@
-/***
- * Excerpted from "Programming Google Glass",
- * published by The Pragmatic Bookshelf.
- * Copyrights apply to this code. It may not be used to create training material, 
- * courses, books, articles, and the like. Contact us if you are in doubt.
- * We make no guarantees that this code is fit for any purpose. 
- * Visit http://www.pragmaticprogrammer.com/titles/erpgg for more book information.
-***/
 package test.book.glass.places;
 
 public class Place {
-  private String name;
-  private String address;
-  private String phone;
-  private double latitude;
-  private double longitude;
-  private String reference;
-  private String kind;
-  
-  public String getKind() {
-    return kind;
-  }
+	private String name;
+	private String address;
+	private String phone;
+	private double latitude;
+	private double longitude;
+	private String reference;
+	private String kind;
 
-  public void setKind(String kind) {
-    this.kind = kind;
-  }
+	public String getKind() {
+		return kind;
+	}
 
-  public double getLatitude() {
-    return latitude;
-  }
+	public void setKind(String kind) {
+		this.kind = kind;
+	}
 
-  public void setLatitude(double latitude) {
-    this.latitude = latitude;
-  }
+	public double getLatitude() {
+		return latitude;
+	}
 
-  public double getLongitude() {
-    return longitude;
-  }
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
 
-  public void setLongitude(double longitude) {
-    this.longitude = longitude;
-  }
+	public double getLongitude() {
+		return longitude;
+	}
 
-  public String getReference() {
-    return reference;
-  }
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
 
-  public void setReference(String reference) {
-    this.reference = reference;
-  }
+	public String getReference() {
+		return reference;
+	}
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	public void setReference(String reference) {
+		this.reference = reference;
+	}
 
-  public void setAddress(String address) {
-    this.address = address;
-  }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-  public void setPhone(String phone) {
-    this.phone = phone;
-  }
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
-  public String getName() {
-    return name;
-  }
-  
-  public String getAddress() {
-    return address;
-  }
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
-  public String getPhone() {
-    return phone;
-  }
+	public String getName() {
+		return name;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
 }

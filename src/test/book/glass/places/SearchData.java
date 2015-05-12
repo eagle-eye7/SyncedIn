@@ -1,11 +1,3 @@
-/***
- * Excerpted from "Programming Google Glass",
- * published by The Pragmatic Bookshelf.
- * Copyrights apply to this code. It may not be used to create training material, 
- * courses, books, articles, and the like. Contact us if you are in doubt.
- * We make no guarantees that this code is fit for any purpose. 
- * Visit http://www.pragmaticprogrammer.com/titles/erpgg for more book information.
-***/
 package test.book.glass.places;
 
 import java.math.BigDecimal;
@@ -15,41 +7,36 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public final class SearchData extends HashMap<String, Object>
-{
-  public static final String BASE_URL =
-      "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
-  
-  @SuppressWarnings("unchecked")
-  public List<Place> buildPlaces()
-  {
-    LinkedList<Place> places = new LinkedList<Place>();
+public final class SearchData extends HashMap<String, Object> {
+	public static final String BASE_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
 
-    List<Map<String, Object>> results =
-        (List<Map<String, Object>>)get("results");
-    
-    for( Map<String, Object> data : results )
-    {
-      Place place = new Place();
-      try {
-        place.setName( (String)data.get("name") );
-        //place.address = (String)data.get("vicinity");
-        place.setReference( (String)data.get("reference") ); 
+	@SuppressWarnings("unchecked")
+	public List<Place> buildPlaces() {
+		LinkedList<Place> places = new LinkedList<Place>();
 
-        Map<String,Object> geometry =
-            (Map<String,Object>)data.get("geometry");
-        Map<String,BigDecimal> location =
-            (Map<String,BigDecimal>)geometry.get("location");
+		List<Map<String, Object>> results = (List<Map<String, Object>>) get("results");
 
-        place.setLatitude( location.get("lat").doubleValue() );
-        place.setLongitude( location.get("lng").doubleValue() );
+		for (Map<String, Object> data : results) {
+			Place place = new Place();
+			try {
+				place.setName((String) data.get("name"));
+				// place.address = (String)data.get("vicinity");
+				place.setReference((String) data.get("reference"));
 
-        places.add(place);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
+				Map<String, Object> geometry = (Map<String, Object>) data
+						.get("geometry");
+				Map<String, BigDecimal> location = (Map<String, BigDecimal>) geometry
+						.get("location");
 
-    return places;
-  }
+				place.setLatitude(location.get("lat").doubleValue());
+				place.setLongitude(location.get("lng").doubleValue());
+
+				places.add(place);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return places;
+	}
 }

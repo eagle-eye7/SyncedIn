@@ -6,20 +6,19 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 
-import test.book.glass.auth.AuthUtils;
 import test.book.glass.places.Place;
 import test.book.glass.places.PlaceUtils;
 
-import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.util.Base64;
 import com.google.api.services.mirror.Mirror;
 import com.google.api.services.mirror.Mirror.Timeline;
@@ -39,14 +38,18 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 public final class LunchRoulette {
+
+	public static String img_link;
+
 	public static void insertRandomRestaurantTimelineItem(ServletContext ctx,
 			String userId) throws IOException, ServletException {
+
 		Mirror mirror = MirrorUtils.getMirror(userId);
 		try {
 			Location location = mirror.locations().get("latest").execute();
 
-			double latitude = location.getLatitude();// 28.5442190;//
-			double longitude = location.getLongitude();// 77.3339640;//
+			double latitude = location.getLatitude();// 28.5442190;
+			double longitude = location.getLongitude();// 77.3339640;
 			Place restaurant = getRandomRestaurant(latitude, longitude);
 			/*
 			 * restaurant.setLatitude(latitude);
@@ -66,21 +69,125 @@ public final class LunchRoulette {
 		// get a nearby restaurant from Google Places
 	}
 
-	public static void insertAndSaveSimpleHtmlTimelineItem(ServletContext ctx,
-			String userId) throws IOException, ServletException {
+	public static void insertAndSaveSimpleCuisineHtmlTimelineItem(
+			ServletContext ctx, String userId) throws IOException,
+			ServletException {
 		Mirror mirror = MirrorUtils.getMirror(userId);
 		Timeline timeline = mirror.timeline();
 
+		// build a bundle id for all timeline items
+		String bundleId = "syncedIn" + UUID.randomUUID();
+
 		// get a cuisine, populate an object, and render the template
 		String cuisine = getRandomCuisine();
-		Map<String, String> data = Collections.singletonMap("food", cuisine);
-		String html = render(ctx, "glass/cuisine.ftl", data);
+		Map<String, String> data_cuisine = new HashMap<String, String>();
+		data_cuisine.put("food", cuisine);
+		data_cuisine.put("img_link", img_link);
+		String html_cuisine = render(ctx, "glass/cuisine.ftl", data_cuisine);
 
-		TimelineItem timelineItem = new TimelineItem()
-				.setTitle("Lunch Roulette").setHtml(html)
+		TimelineItem timelineItem_cuisine = new TimelineItem()
+				.setTitle("SyncedIn").setHtml(html_cuisine)
 				.setSpeakableText("You should eat " + cuisine + " for lunch");
 
-		TimelineItem tiResp = timeline.insert(timelineItem).execute();
+		TimelineItem tiResp = timeline.insert(timelineItem_cuisine).execute();
+
+		setLunchRouletteId(userId, tiResp.getId());
+	}
+
+	public static void insertAndSaveSimpleSportsHtmlTimelineItem(
+			ServletContext ctx, String userId) throws IOException,
+			ServletException {
+		Mirror mirror = MirrorUtils.getMirror(userId);
+		Timeline timeline = mirror.timeline();
+
+		String sports_complex = "Feroz Shah Kotla Ground";
+		Map<String, String> data_sports = new HashMap<String, String>();
+		data_sports.put("sports_complex", sports_complex);
+		data_sports.put("img_link", "https://dwible.com/img/ground.jpg");
+		String html_sports = render(ctx, "glass/sports.ftl", data_sports);
+
+		TimelineItem timelineItem_sports = new TimelineItem()
+				.setTitle("SyncedIn")
+				.setHtml(html_sports)
+				.setSpeakableText(
+						"You should visit " + sports_complex
+								+ " for the match today");
+
+		TimelineItem tiResp = timeline.insert(timelineItem_sports).execute();
+
+		setLunchRouletteId(userId, tiResp.getId());
+	}
+
+	public static void insertAndSaveSimpleRestaurantHtmlTimelineItem(
+			ServletContext ctx, String userId) throws IOException,
+			ServletException {
+		Mirror mirror = MirrorUtils.getMirror(userId);
+		Timeline timeline = mirror.timeline();
+
+		String restaurant = "Dosa Plaza";
+		Map<String, String> data_restaurant = new HashMap<String, String>();
+		data_restaurant.put("restaurant", restaurant);
+		data_restaurant.put("img_link", "https://dwible.com/img/dosaPlaza.jpg");
+		String html_restaurant = render(ctx, "glass/restaurant.ftl",
+				data_restaurant);
+
+		TimelineItem timelineItem_restaurant = new TimelineItem()
+				.setTitle("SyncedIn")
+				.setHtml(html_restaurant)
+				.setSpeakableText(
+						"You should visit " + restaurant
+								+ " for the lunch today");
+
+		TimelineItem tiResp = timeline.insert(timelineItem_restaurant)
+				.execute();
+
+		setLunchRouletteId(userId, tiResp.getId());
+	}
+
+	public static void insertAndSaveSimpleBookHtmlTimelineItem(
+			ServletContext ctx, String userId) throws IOException,
+			ServletException {
+		Mirror mirror = MirrorUtils.getMirror(userId);
+		Timeline timeline = mirror.timeline();
+
+		String bookStore = "Teksons Bookshop";
+		Map<String, String> data_book = new HashMap<String, String>();
+		data_book.put("bookStore", bookStore);
+		data_book.put("img_link", "https://dwible.com/img/bookshop.jpg");
+		String html_bookStore = render(ctx, "glass/bookStore.ftl", data_book);
+
+		TimelineItem timelineItem_book = new TimelineItem()
+				.setTitle("SyncedIn")
+				.setHtml(html_bookStore)
+				.setSpeakableText(
+						"You should visit " + bookStore
+								+ " for buying books today");
+
+		TimelineItem tiResp = timeline.insert(timelineItem_book).execute();
+
+		setLunchRouletteId(userId, tiResp.getId());
+	}
+
+	public static void insertAndSaveSimpleClothHtmlTimelineItem(
+			ServletContext ctx, String userId) throws IOException,
+			ServletException {
+		Mirror mirror = MirrorUtils.getMirror(userId);
+		Timeline timeline = mirror.timeline();
+
+		String clothStore = "Wills Lifestyle";
+		Map<String, String> data_cloth = new HashMap<String, String>();
+		data_cloth.put("clothStore", clothStore);
+		data_cloth.put("img_link", "https://dwible.com/img/clothingStore.jpg");
+		String html_clothStore = render(ctx, "glass/clothStore.ftl", data_cloth);
+
+		TimelineItem timelineItem_cloth = new TimelineItem()
+				.setTitle("SyncedIn")
+				.setHtml(html_clothStore)
+				.setSpeakableText(
+						"You should visit " + clothStore
+								+ " for buying clothes today");
+
+		TimelineItem tiResp = timeline.insert(timelineItem_cloth).execute();
 
 		setLunchRouletteId(userId, tiResp.getId());
 	}
@@ -95,49 +202,6 @@ public final class LunchRoulette {
 		String cuisine = getRandomCuisine();
 		Map<String, String> data = Collections.singletonMap("food", cuisine);
 		return render(ctx, "glass/cuisine.ftl", data);
-	}
-
-	public static void insertSimpleTextTimelineItem(HttpServletRequest req)
-			throws IOException {
-		Mirror mirror = MirrorUtils.getMirror(req);
-		Timeline timeline = mirror.timeline();
-
-		TimelineItem timelineItem = new TimelineItem()
-				.setText(getRandomCuisine());
-
-		timeline.insert(timelineItem).executeAndDownloadTo(System.out);
-	}
-
-	public static void insertAndSaveSimpleTextTimelineItem(
-			HttpServletRequest req) throws IOException {
-		String userId = SessionUtils.getUserId(req);
-		Credential credential = AuthUtils.getCredential(userId);
-		Mirror mirror = MirrorUtils.getMirror(credential);
-
-		Timeline timeline = mirror.timeline();
-
-		TimelineItem timelineItem = new TimelineItem().setTitle(
-				"Lunch Roulette").setText(getRandomCuisine());
-
-		TimelineItem tiResp = timeline.insert(timelineItem).execute();
-
-		setLunchRouletteId(userId, tiResp.getId());
-	}
-
-	public static TimelineItem getLastSavedTimelineItem(String userId)
-			throws IOException {
-		Credential credential = AuthUtils.getCredential(userId);
-		Mirror mirror = MirrorUtils.getMirror(credential);
-		Timeline timeline = mirror.timeline();
-
-		String id = getLunchRouletteId(userId);
-
-		TimelineItem timelineItem = null;
-		if (id != null) {
-			timelineItem = timeline.get(id).execute();
-		}
-
-		return timelineItem;
 	}
 
 	public static void setSimpleMenuItems(TimelineItem ti, boolean hasRestaurant) {
@@ -188,8 +252,6 @@ public final class LunchRoulette {
 			ti.getMenuItems().add(new MenuItem().setAction("VOICE_CALL"));
 			ti.getMenuItems().add(new MenuItem().setAction("NAVIGATE"));
 
-			// only if we have a restaurant website
-			// addMenuItem(ti, "VIEW_WEBSITE");
 		}
 
 		// It's good form to make DELETE the last item
@@ -206,20 +268,28 @@ public final class LunchRoulette {
 	 * @return one of many lunch choices.
 	 */
 	public static String getRandomCuisine() {
-		String[] lunchOptions = { "American", "Chinese", "French", "Italian",
-				"Japenese", "Thai" };
+		String[] lunchOptions = { "North Indian", "South Indian", "Gujrati",
+				"Rajasthani Thali", "Sweet Dish" };
 		int choice = new Random().nextInt(lunchOptions.length);
+		switch (choice) {
+		case 0:
+			img_link = "http://img.cooklime.com/Recipe/f200864/3.jpg";
+			break;
+		case 1:
+			img_link = "http://www.explosivefashion.in/hospitality_images/NonVeg_Platter-Khaima_Puffs,_Mutton_Kola_Urundu,_Kerala_Chilli_Chicken,_Andhra_Chicken.jpg";
+			break;
+		case 2:
+			img_link = "http://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Coconut_Ladoo_Indian_Sweets.jpg/240px-Coconut_Ladoo_Indian_Sweets.jpg";
+			break;
+		case 3:
+			img_link = "http://www.explosivefashion.in/hospitality_images/2p.jpg";
+			break;
+		case 4:
+			img_link = "http://blog.cleveland.com/taste_impact/2008/12/medium_flavor-kugel.jpg";
+		}
 		return lunchOptions[choice];
 	}
 
-	/**
-	 * Render the HTML template with the given data
-	 * 
-	 * @param resp
-	 * @param data
-	 * @throws IOException
-	 * @throws ServletException
-	 */
 	public static String render(ServletContext ctx, String template, Object data)
 			throws IOException, ServletException {
 		Configuration config = new Configuration();

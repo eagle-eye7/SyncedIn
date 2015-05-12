@@ -6,6 +6,6 @@
 </figure>
  <section>
    <h2 class="yellow">SyncedIn Recommends...</h2>
-   <h4 class="red"><strong>${ restaurant }</strong> for you</h4>   
+   <h4 class="red"><strong>${ clothStore }</strong> for you</h4>   
  </section>
 </article>
